@@ -1,0 +1,26 @@
+{
+  "name": "autodj",
+  "version": "0.1.0",
+  "description": "Automate everything - this time its dj'ing",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/naglafar/autodj.git"
+  },
+  "keywords": [
+    "beat",
+    "matching",
+    "html5",
+    "audio",
+    "mixradio"
+  ],
+  "author": "Tom Parkinson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/naglafar/autodj/issues"
+  },
+  "homepage": "https://github.com/naglafar/autodj#readme"
+}
