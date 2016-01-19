@@ -20,7 +20,8 @@ module.exports = {
       'react-datetime',
       'react-dom',
       'react-router',
-      'uuid'
+      'uuid',
+      'react-dropzone'
     ]
   },
   output: {
