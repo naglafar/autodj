@@ -5,6 +5,7 @@ const flux = require('../flux'),
   storeNames = require('../constants/storeNames');
 
 const Row = require('./Row.jsx'),
+  Col = require('./Column.jsx'),
   Track = require('./Track.jsx');
 
 const Tracks = React.createClass({
@@ -25,14 +26,13 @@ const Tracks = React.createClass({
     return (
       <div className="tracks">
         <Row>
-          <h1>Current Playlist</h1>
-        </Row>
-        <Row>
-          <ol>
-          {
-            this.state.tracks.map(this.renderTrack)
-          }
-          </ol>
+          <Col s={12}>
+            <ol>
+            {
+              this.state.tracks.map(this.renderTrack)
+            }
+            </ol>
+          </Col>
         </Row>
       </div>
     );

@@ -26,7 +26,8 @@ const PlaylistStore = Fluxxor.createStore({
       name: uploadedTrack.name,
       type: uploadedTrack.type,
       analysed: false,
-      track: uploadedTrack
+      track: uploadedTrack,
+      bpm: '140 BPM'
     };
 
     this.state.tracks.push(track);
