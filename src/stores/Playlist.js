@@ -108,13 +108,16 @@ const PlaylistStore = Fluxxor.createStore({
             track.peaks = peaks;
             track.analysed = true;
             track.bpm = top[0].tempo;
-            that.emit('change');
+            track.bufferLength = buffer.length;
             resolve();
           });
         });
       })
       .catch((error) => {
         return console.error('failed to bpm match the file', error);
+      }).then(() => {
+        console.log('done analysis');
+        that.emit('change');
       });
   }
 });
