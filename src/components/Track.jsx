@@ -28,28 +28,32 @@ const Track = React.createClass({
   },
 
   renderTrackAnalysis: function () {
-
-    let analysis;
-
     if (this.props.track.analysed) {
-      analysis = (
-        <svg className="track-analysis">
-          {
-            this.props.track.peaks
-              .reduce(this.grabEveryFourthPeak, [])
-              .map(this.createSomeRectangles)
-          }
-        </svg>
-      );
-    } else {
-      analysis = (
-        <div className="awaiting-analysis">
-          <span>Awaiting Analysis</span>
-        </div>
-      );
+      return this.renderAnalysis();
     }
 
-    return analysis;
+    return this.renderAwaitingAnalysis();
+  },
+
+  renderAnalysis: function () {
+    return (
+      <svg className="track-analysis">
+        {
+          this.props.track.peaks
+            .reduce(this.grabEveryFourthPeak, [])
+            .map(this.createSomeRectangles)
+        }
+      </svg>
+    );
+  },
+
+
+  renderAwaitingAnalysis: function () {
+    return (
+      <div className="awaiting-analysis">
+        <span>Awaiting Analysis</span>
+      </div>
+    );
   },
 
   grabEveryFourthPeak: (acc, val, index) => {
