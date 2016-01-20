@@ -4,6 +4,11 @@ const Row = require('./Row.jsx'),
   Col = require('./Column.jsx');
 
 const Track = React.createClass({
+
+  propertTypes: {
+    Track: React.PropTypes.object.isRequired
+  },
+
   render: function () {
     return (
       <div className="track">

@@ -21,7 +21,7 @@ ReactDom.render(
   <Router history={history}>
     <Route path="/" component={Layout}>
       <Route path="player" component={Player}/>
-      <IndexRoute component={Player}/>
+      <IndexRoute component={Playlist}/>
 
       <Route path="playlist" components={Playlist}/>
     </Route>

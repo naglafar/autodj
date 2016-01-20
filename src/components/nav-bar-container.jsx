@@ -27,18 +27,18 @@ var NavBarContainer = React.createClass({
           <div id="navbar" className="navbar-collapse collapse">
             <ul className="nav navbar-nav">
               <li>
-                <Link to="/player">
-                  <Gliff gliff="equalizer"/>
-                  {
-                    `  Playing`
-                  }
-                </Link>
-              </li>
-              <li>
                 <Link to="/playlist">
                   <Gliff gliff="list"/>
                   {
                     `  Play List`
+                  }
+                </Link>
+              </li>
+              <li>
+                <Link to="/player">
+                  <Gliff gliff="equalizer"/>
+                  {
+                    `  Playing`
                   }
                 </Link>
               </li>
