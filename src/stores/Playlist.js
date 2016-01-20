@@ -36,6 +36,7 @@ const PlaylistStore = Fluxxor.createStore({
 
     Promise
       .resolve()
+
       .then(() => {
         return new Promise((resolve) => {
           console.log('adding track');
@@ -67,6 +68,8 @@ const PlaylistStore = Fluxxor.createStore({
           console.log('crunching bpm', fileReadEvent);
           var OfflineContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
           var offlineContext = new OfflineContext(1, 2, 44100);
+
+          track.arrayBuffer = fileReadEvent.target.result;
 
           offlineContext.decodeAudioData(fileReadEvent.target.result, function (buffer) {
 
@@ -113,9 +116,12 @@ const PlaylistStore = Fluxxor.createStore({
           });
         });
       })
+
       .catch((error) => {
         return console.error('failed to bpm match the file', error);
-      }).then(() => {
+      })
+
+      .then(() => {
         console.log('done analysis');
         that.emit('change');
       });
