@@ -29,21 +29,15 @@ const Track = React.createClass({
 
   renderTrackAnalysis: function () {
 
-    let bufferLength = this.props.track.bufferLength,
-      analysis;
+    let analysis;
 
     if (this.props.track.analysed) {
       analysis = (
         <svg className="track-analysis">
           {
-            this.props.track.peaks.map(
-              (peak) => {
-                let x = (100 * peak / bufferLength) + '%';
-                return (
-                  <rect key={x} x={x} y="0" width="1" height="100%"></rect>
-                );
-              }
-            )
+            this.props.track.peaks
+              .reduce(this.grabEveryFourthPeak, [])
+              .map(this.createSomeRectangles)
           }
         </svg>
       );
@@ -56,8 +50,24 @@ const Track = React.createClass({
     }
 
     return analysis;
-  }
+  },
 
+  grabEveryFourthPeak: (acc, val, index) => {
+    if (index % 4 === 0) {
+      acc.push(val);
+    }
+    return acc;
+  },
+
+  createSomeRectangles: function (peak) {
+    const bufferLength = this.props.track.bufferLength;
+
+    let x = (100 * peak / bufferLength) + '%';
+
+    return (
+      <rect key={x} x={x} y="0" width="1" height="100%"></rect>
+    );
+  }
 });
 
 module.exports = Track;
