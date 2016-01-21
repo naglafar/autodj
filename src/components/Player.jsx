@@ -10,7 +10,7 @@ const flux = require('../flux'),
   mixins = require('./mixins'),
   storeNames = require('../constants/storeNames');
 
-const fadeTimeSeconds = 2;
+const fadeTimeSeconds = 1.5;
 
 const context = new AudioContext();
 
