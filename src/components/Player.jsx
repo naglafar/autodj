@@ -22,30 +22,38 @@ const Player = React.createClass({
   },
 
   play: function () {
+    let audioLoaded = this.state.trackLoaded;
+
+    if (audioLoaded) {
+      this.resume();
+    } else {
+      this.enqueueTrack();
+    }
+  },
+
+  enqueueTrack: function () {
     let tracks = flux.store(storeNames.PLAY_LIST).getState().tracks,
       currentTrack = tracks[0],
       that = this;
 
     Promise.resolve()
 
-    .then(
-      () => {
+      .then(() => {
         console.log('starting playing');
         that.setState({playing: true});
-      }
-    )
+      })
 
-    .then(() => {
-      return that.prepTrack(currentTrack);
-    })
+      .then(() => {
+        return that.prepTrack(currentTrack);
+      })
 
-    .then(({source, gain}) => {
-      return that.fadeIn(source, gain, 0);
-    })
+      .then(({source, gain}) => {
+        return that.fadeIn(source, gain);
+      })
 
-    .then(({source, gain}) => {
-      return that.savePlayingTrack(source, gain);
-    });
+      .then(({source, gain}) => {
+        return that.savePlayingTrack(source, gain);
+      });
   },
 
   pause: function () {
@@ -57,6 +65,11 @@ const Player = React.createClass({
     .then(
       () => {
         return that.fadeOut(source, gain);
+      }
+    )
+    .then(
+      () => {
+        that.setState({playing: false});
       }
     );
   },
@@ -70,7 +83,8 @@ const Player = React.createClass({
     return new Promise((resolve) => {
       that.setState({
         source: source,
-        gain: gain
+        gain: gain,
+        trackLoaded: true
       });
       console.debug('now playing');
       resolve();
@@ -138,39 +152,27 @@ const Player = React.createClass({
   },
 
   skip: function () {
-   /* let tracks = flux.store(storeNames.PLAY_LIST).getState().tracks,
+    const that = this,
+      tracks = flux.store(storeNames.PLAY_LIST).getState().tracks,
       nextTrack = tracks[1];
 
-    // fade in
-    this.playTrack(nextTrack, sources.NEW_SOURCE);
-    // delay
+    let nextSource,
+      nextGain;
 
-    // fade out
-
-    this.state[sources.MAIN_SOURCE].stop();
-    this.state[sources.MAIN_SOURCE] = this.state[sources.NEW_SOURCE];
-
-    delete this.state[sources.NEW_SOURCE];*/
-  },
-
-  playTrack: function (track, layer) {
-
-    let that = this,
-      context = this.state.context;
-
-    context.decodeAudioData(track.arrayBuffer, function(buffer) {
-      let source = context.createBufferSource(); // creates a sound source
-      source.buffer = buffer;                    // tell the source which sound to play
-      source.connect(context.destination);       // connect the source to the context's destination (the speakers)
-      source.start(0);                           // play the source now
-
-      let playingState = {
-        playing: true
-      };
-
-      playingState[layer] = source;
-
-      that.setState(playingState);
+    Promise.resolve()
+    .then(() => {
+      return that.prepTrack(nextTrack);
+    })
+    .then(({source, gain}) => {
+      nextSource = source;
+      nextGain = gain;
+      return that.fadeIn(source, gain);
+    })
+    .then(() => {
+      return that.fadeOut(that.state.source, that.state.gain);
+    })
+    .then(() => {
+      return that.savePlayingTrack(nextSource, nextGain);
     });
   },
 
