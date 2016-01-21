@@ -7,6 +7,7 @@ const Col = require('./Column.jsx'),
   Button = require('./Button.jsx');
 
 const flux = require('../flux'),
+  mixins = require('./mixins'),
   storeNames = require('../constants/storeNames');
 
 const fadeTimeSeconds = 2;
@@ -15,11 +16,16 @@ const context = new AudioContext();
 
 const Player = React.createClass({
 
-  getInitialState: () => {
+  mixins: [mixins.storeWatch(storeNames.PLAY_LIST)],
+
+  getDefaultProps: function () {
     return {
-      playing: false,
-      trackLoaded: false
+      flux: flux
     };
+  },
+
+  getStateFromFlux: function () {
+    return flux.store(storeNames.PLAY_LIST).getState();
   },
 
   play: function () {
@@ -38,43 +44,38 @@ const Player = React.createClass({
       that = this;
 
     Promise.resolve()
+    .then(() => {
+      console.log('starting playing');
+      return flux.actions.play();
+    })
 
-      .then(() => {
-        console.log('starting playing');
-        that.setState({playing: true});
-      })
+    .then(() => {
+      return that.prepTrack(currentTrack);
+    })
 
-      .then(() => {
-        return that.prepTrack(currentTrack);
-      })
+    .then(({source, gain}) => {
+      return that.fadeIn(source, gain);
+    })
 
-      .then(({source, gain}) => {
-        return that.fadeIn(source, gain);
-      })
-
-      .then(({source, gain}) => {
-        return that.savePlayingTrack(source, gain);
-      });
+    .then(({source, gain}) => {
+      return that.savePlayingTrack(source, gain);
+    });
   },
 
   pause: function () {
     context.suspend();
-    this.setState({playing: false});
+    flux.actions.pause();
   },
 
   resume: function () {
     context.resume();
-    this.setState({playing: true});
+    flux.actions.play();
   },
 
   savePlayingTrack: function (source, gain) {
-    const that = this;
     return new Promise((resolve) => {
-      that.setState({
-        source: source,
-        gain: gain,
-        trackLoaded: true
-      });
+      console.debug('save playing track');
+      flux.actions.trackPlaying(source, gain, true);
       console.debug('now playing');
       resolve();
     });
@@ -136,7 +137,8 @@ const Player = React.createClass({
 
   skip: function () {
     const that = this,
-      tracks = flux.store(storeNames.PLAY_LIST).getState().tracks,
+      state = flux.store(storeNames.PLAY_LIST).getState(),
+      tracks = state.tracks,
       nextTrack = tracks[1];
 
     let nextSource,
@@ -152,11 +154,18 @@ const Player = React.createClass({
       return that.fadeIn(source, gain);
     })
     .then(() => {
-      return that.fadeOut(that.state.source, that.state.gain);
+      return that.fadeOut(state.source, state.gain);
     })
     .then(() => {
       return that.savePlayingTrack(nextSource, nextGain);
+    })
+
+    .then(() => {
+      console.log('next Track');
+      flux.actions.nextTrack();
     });
+
+    //  move playlist on
   },
 
   render: function () {
@@ -173,6 +182,7 @@ const Player = React.createClass({
         <Row>
           {this.renderTrack(nextTrack)}
         </Row>
+        <hr/>
         <Row>
           <Col s={6}>
             {this.renderPlayOrPause()}

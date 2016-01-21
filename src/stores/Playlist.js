@@ -1,5 +1,6 @@
 const Fluxxor = require('fluxxor'),
-  uuid = require('uuid');
+  uuid = require('uuid'),
+  R = require('ramda');
 
 const actionNames = require('../constants/actionNames'),
   beatDetector = require('./beatDetector');
@@ -8,16 +9,45 @@ const PlaylistStore = Fluxxor.createStore({
 
   initialize: function () {
     this.state = {
-      tracks: []
+      tracks: [],
+      playing: false,
+      trackLoaded: false
     };
 
     this.bindActions(
-      actionNames.UPLOAD_TRACK, this.dealWithUploadedTrack
+      actionNames.UPLOAD_TRACK, this.dealWithUploadedTrack,
+      actionNames.NEXT_TRACK, this.nextTrack,
+      actionNames.PLAY, this.play,
+      actionNames.PAUSE, this.pause,
+      actionNames.TRACK_PLAYING, this.trackPlaying
     );
   },
 
   getState: function () {
     return this.state;
+  },
+
+  nextTrack: function () {
+    this.state.tracks = R.drop(1, this.state.tracks);
+    this.emit('change');
+  },
+
+  play: function () {
+    this.state.playing = true;
+    this.state.trackLoaded = true;
+    this.emit('change');
+  },
+
+  pause: function () {
+    this.state.playing = false;
+    this.emit('change');
+  },
+
+  trackPlaying: function ({source, gain, trackLoaded}) {
+    this.state.source = source;
+    this.state.gain = gain;
+    this.state.trackLoaded = trackLoaded;
+    this.emit('change');
   },
 
   dealWithUploadedTrack: function (uploadedTrack) {
