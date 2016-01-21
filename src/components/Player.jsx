@@ -11,13 +11,14 @@ const flux = require('../flux'),
 
 const fadeTimeSeconds = 2;
 
+const context = new AudioContext();
+
 const Player = React.createClass({
 
   getInitialState: () => {
     return {
       playing: false,
-      trackLoaded: false,
-      context: new AudioContext()
+      trackLoaded: false
     };
   },
 
@@ -92,10 +93,8 @@ const Player = React.createClass({
   },
 
   prepTrack: function (track) {
-    const that = this;
     console.debug('preparing track', track);
     return new Promise((resolve) => {
-      const context = that.state.context;
       context.decodeAudioData(track.arrayBuffer, function (buffer) {
         let source = context.createBufferSource();
         let gainNode = context.createGain();
@@ -109,11 +108,9 @@ const Player = React.createClass({
   },
 
   fadeIn: function (source, gainNode) {
-    const that = this;
     return new Promise((resolve) => {
       console.debug('fading in');
-      const context = that.state.context,
-        currentTime = context.currentTime;
+      const currentTime = context.currentTime;
 
       gainNode.gain.linearRampToValueAtTime(0, currentTime);
       gainNode.gain.linearRampToValueAtTime(1, currentTime + fadeTimeSeconds);
@@ -131,14 +128,16 @@ const Player = React.createClass({
 
   fadeOut: function (source, gainNode) {
 
-    const context = this.state.context,
-      currentTime = context.currentTime;
+    const currentTime = context.currentTime;
+
+    console.debug('fading out');
 
     return new Promise((resolve) => {
       gainNode.gain.linearRampToValueAtTime(1, currentTime);
       gainNode.gain.linearRampToValueAtTime(0, currentTime + fadeTimeSeconds);
 
       setTimeout(() => {
+        console.debug('faded out');
         source.stop();
         resolve();
       },
