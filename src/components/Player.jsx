@@ -58,25 +58,13 @@ const Player = React.createClass({
   },
 
   pause: function () {
-    let that = this,
-      source = this.state.source,
-      gain = this.state.gain;
-
-    Promise.resolve()
-    .then(
-      () => {
-        return that.fadeOut(source, gain);
-      }
-    )
-    .then(
-      () => {
-        that.setState({playing: false});
-      }
-    );
+    context.suspend();
+    this.setState({playing: false});
   },
 
   resume: function () {
-
+    context.resume();
+    this.setState({playing: true});
   },
 
   savePlayingTrack: function (source, gain) {
@@ -144,10 +132,6 @@ const Player = React.createClass({
         fadeTimeSeconds * 1000
       );
     });
-  },
-
-  moveTheQueueAlongOne: function () {
-
   },
 
   skip: function () {
