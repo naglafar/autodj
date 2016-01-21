@@ -14,3 +14,4 @@ Other commands:
     build distribution: npm run  build
     clean distribution: npm run clean
 
+License MIT.
