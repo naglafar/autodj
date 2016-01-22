@@ -10,7 +10,7 @@ const flux = require('../flux'),
   mixins = require('./mixins'),
   storeNames = require('../constants/storeNames');
 
-const fadeTimeSeconds = 1.5;
+const fadeTimeSeconds = 3;
 
 const context = new AudioContext();
 
@@ -101,8 +101,8 @@ const Player = React.createClass({
       console.debug('fading in');
       const currentTime = context.currentTime;
 
-      gainNode.gain.linearRampToValueAtTime(0, currentTime);
-      gainNode.gain.linearRampToValueAtTime(1, currentTime + fadeTimeSeconds);
+      gainNode.gain.exponentialRampToValueAtTime(0.1, currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(1.0, currentTime + fadeTimeSeconds);
 
       source.start(0);
 
@@ -122,8 +122,8 @@ const Player = React.createClass({
     console.debug('fading out');
 
     return new Promise((resolve) => {
-      gainNode.gain.linearRampToValueAtTime(1, currentTime);
-      gainNode.gain.linearRampToValueAtTime(0, currentTime + fadeTimeSeconds);
+      gainNode.gain.exponentialRampToValueAtTime(1.0, currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.1, currentTime + fadeTimeSeconds);
 
       setTimeout(() => {
         console.debug('faded out');
