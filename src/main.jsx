@@ -19,7 +19,7 @@ const history = require('./history');
 
 ReactDom.render(
   <Router history={history}>
-    <Route path="/" component={Layout}>
+    <Route path="/(autodj)" component={Layout}>
       <Route path="player" component={Player}/>
       <IndexRoute component={Playlist}/>
 

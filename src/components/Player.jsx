@@ -10,7 +10,8 @@ const flux = require('../flux'),
   mixins = require('./mixins'),
   storeNames = require('../constants/storeNames');
 
-const fadeTimeSeconds = 3;
+const fadeTimeSeconds = 3; // seconds
+const startTrackAt = 70; // seconds
 
 const context = new AudioContext();
 
@@ -104,7 +105,7 @@ const Player = React.createClass({
       gainNode.gain.exponentialRampToValueAtTime(0.1, currentTime);
       gainNode.gain.exponentialRampToValueAtTime(1.0, currentTime + fadeTimeSeconds);
 
-      source.start(0);
+      source.start(0, startTrackAt);
 
       setTimeout(() => {
         console.debug('faded track in');
