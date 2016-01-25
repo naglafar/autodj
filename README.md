@@ -2,6 +2,8 @@
 
 Simple proof of concept for loading various music tracks into a playlist then cross fading / beat matching like a dj would do with some dec's.
 
+Working demo: http://naglafar.github.io/autodj/
+
 yes the code is awful... well for now!
 
 CROSS FADING NOW IMPLEMENTED
